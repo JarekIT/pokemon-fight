@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    
+    <script src="https://kit.fontawesome.com/1e750a7754.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <hr>
+        <div class="hide-up">
+            <h1>Choose your Pokemon</h1>
+            <h5>Please be patient until all Pokemon are loaded</h5>
+            <div class="row img-list"></div>
+        </div>
+        <hr>
+
+        <div class="buttonHolder">
+            <button class="btn-hide-up btn btn-warning">Show/Hide Pokemon's list</button>
+            <button class="btn-hide-down btn btn-warning">Show/Hide fight interface</button>
+        </div>
+        <hr>
+
+        <div class="hide-down">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="btn-generate-opponent btn btn-light centerButton">Generate random Opponent</button>
+                    <br>
+                    <p class="descr-opponent">Generate Opponent before fight</p>
+                </div>
+                <div class="col-sm-6">
+                    <img class="mx-auto img-opponent">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated  progress-opponent" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+    
+            <div class="row">
+                <div class="col-sm-6">
+                    <img class="img-player">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated progress-player" role="progressbar" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn-generate-player btn btn-light centerButton">Generate random Player</button>
+                    <br>
+                    <p class="descr-player">Generate Player before fight</p>
+                </div>
+            </div>
+            <hr>
+
+            <div class="buttonHolder">
+                <button class="btn-atk-simple btn btn-primary">Simple Atack</button>
+                <button class="btn-heal-player btn btn-info">Heal Player</button>
+                <button class="btn-heal-opponent btn btn-info">Heal Opponent</button>
+                <button class="btn-levelup btn btn-info">Level up</button>
+                <button class="btn-clear-log btn btn-info">Clear battle log</button>
+            </div>
+            <hr>
+
+            <div class="row">
+                <p class="game-logs"></p>
+            </div>
+            <hr>
+
+        </div>
+
+        <div class="row">
+            <p>
+                Portfolio: 
+                <a href="http://www.jarekit.pl">http://www.JarekIT.pl</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
