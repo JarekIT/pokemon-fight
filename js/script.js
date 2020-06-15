@@ -20,6 +20,7 @@ let imgOpponent;    //
 let descrPlayer;    // stats description
 let descrOpponent   // stats description
 
+let logId = 0;
 let gameLogs;
 
 let progressHpPlayer;
@@ -61,7 +62,8 @@ const main = () => {
 
 const prepareDOMElements = () => {
     btnAtkSimple = document.querySelector('.btn-atk-simple');
-    btnAtkSpec = document.querySelector('.btn-atk-special');
+    btnAtkSpecial = document.querySelector('.btn-atk-special');
+
     btnGenPlayer = document.querySelector('.btn-generate-player');
     btnGenOpponent = document.querySelector('.btn-generate-opponent');
     btnHealPlayer = document.querySelector('.btn-heal-player');
@@ -98,13 +100,13 @@ class Pokemon {
         this.img = img;
 
         this.stats = {
-            hp: hp,
+            hp: hp*2,
             attack: attack,
             defense: defense,
             attackSp: attackSp,
             defenseSp: defenseSp,
             speed: speed,
-            hpLeft: hp
+            hpLeft: hp*2
         }
     }
 
@@ -141,8 +143,8 @@ class Pokemon {
 }
 
 // generate empty Pokemon 
-$pokemonPlayer = new Pokemon(0,'Generate Player before fight','',10,100,100,100,100,100);
-$pokemonOpponent = new Pokemon(0,'Generate Opponent before fight','',10,100,100,100,100,100);
+$pokemonPlayer = new Pokemon(0,'Generate Player before fight','',100,10,100,100,100,100);
+$pokemonOpponent = new Pokemon(0,'Generate Opponent before fight','',100,10,100,100,100,100);
 
 
 // get All Pokemons 
@@ -222,17 +224,13 @@ const getOnePokemon = id => {
 
 // generate Pokemon controlled by Player
 async function generatePlayer(pokemonId){
-    
-    let id;
-    
+        
     if (pokemonId == 0 || pokemonId == undefined || pokemonId == null) {
-        id = Math.floor(Math.random() * 152);
-    } else {
-        id = pokemonId;
-    }
+        pokemonId = Math.floor(Math.random() * 152);
+    } 
     
     try {
-        $pokemonPlayer = await getOnePokemon(id);
+        $pokemonPlayer = await getOnePokemon(pokemonId);
         console.log($pokemonPlayer);
 
         imgPlayer.setAttribute('width','100px')
@@ -245,7 +243,9 @@ async function generatePlayer(pokemonId){
         setAliveAllPokemons()
 
         // hide upper menu and show down menu
-        switchShowHideUpContainer();
+        if (!divHideUp.classList.contains('hide-up')){
+            switchShowHideUpContainer();
+        } 
         if (divHideDown.classList.contains('hide-down')){
             switchShowHideDownContainer();
         };
@@ -257,17 +257,13 @@ async function generatePlayer(pokemonId){
 
 // generate Pokemon controlled by Opponent
 async function generateOpponent(pokemonId){
-
-    let id;
     
     if (pokemonId == 0 || pokemonId == undefined || pokemonId == null) {
-        id = Math.floor(Math.random() * 152);
-    } else {
-        id = pokemonId;
-    }
+        pokemonId = Math.floor(Math.random() * 152);
+    } 
 
     try {
-        $pokemonOpponent = await getOnePokemon(id);
+        $pokemonOpponent = await getOnePokemon(pokemonId);
         console.log($pokemonOpponent);
 
         imgOpponent.setAttribute('width','100px')
@@ -287,7 +283,7 @@ async function generateOpponent(pokemonId){
 
 
 // main fight method 
-const atackSimple = () =>{
+const atack = (attackType) =>{
 
     let attacker;
     let defender;
@@ -306,11 +302,20 @@ const atackSimple = () =>{
         updateBattleLogs(`${attacker.name} is faster - it will attack first<br>`)
     }
 
-    const generateAttack = () => {
-        att = Math.floor(Math.random() * attacker.stats.attack/2);
-        def = Math.floor(Math.random() * defender.stats.defense/2);
+    const generateAttack = (attackType) => {
+
+        if (attackType == 'special') {
+            attack = attacker.stats.attackSp;
+            defense = defender.stats.defenseSp
+        } else if (attackType == 'simple') {
+            attack = attacker.stats.attack;
+            defense = defender.stats.defense;
+        }
+
+        att = Math.floor(Math.random() * attack /2);
+        def = Math.floor(Math.random() * defense /2);
         damage = (att - def >= 0) ? att - def : 0; 
-        updateBattleLogs(`${attacker.name} deals ${damage} damages (${att} attacks vs ${def} defends)<br>`)
+        updateBattleLogs(`${attacker.name} use ${attackType} attack and deals ${damage} damages (${att} attacks vs ${def} defends)<br>`)
     }
 
     const takeDamage = damage => {
@@ -346,7 +351,8 @@ const atackSimple = () =>{
     if (attackerAlive && defenderAlive){
         updateBattleLogs(`- - - - - New round - - - - -<br>`)
         checkWhoIsFaster();
-        generateAttack();
+        shakeScreenAfterAttack();
+        generateAttack(attackType);
         takeDamage(damage);
         updateDescription(defender)
         updateHpBar(defender)
@@ -354,7 +360,7 @@ const atackSimple = () =>{
         // do fight - 2nd phase
         if (defenderAlive){
             counterAttack()
-            generateAttack();
+            generateAttack(attackType);
             takeDamage(damage);
             updateDescription(defender)
             updateHpBar(defender)
@@ -362,10 +368,37 @@ const atackSimple = () =>{
         }
     } else {
         updateBattleLogs(`<u>Fight is over, choose new Pokemon</u><br><br>`)
+
+
+    }
+
+    // when Opponent is dead
+    if ($pokemonOpponent.stats.hpLeft == 0){
+        setTimeout ( askForAnotherFight , 750 )
     }
 }
 
+const shakeScreenAfterAttack = () => {
+    const length = 400;
+    const amplitude = 2;
+    
+    const shake = () => {
+        for(let i = 0; i < length; i++){
+            window.moveBy(amplitude,0);
+            window.moveBy(0,amplitude);
+            window.moveBy(-amplitude,0);
+            window.moveBy(0,-amplitude);
+        }
+    }
+    shake();
+}
 
+const askForAnotherFight = () => {
+
+    if (confirm(`The fight is over, do you want to fight with another Pokemon?`)){
+        generateOpponent(0);
+    } 
+}
 
 
 
@@ -378,21 +411,24 @@ const updateDescription = pokemon => {
     //     Max Hp: ${pokemon.stats.hp}`;
 
         const newDescription = 
-        `<table class="table table-sm table-bordered w-auto">
+        `<h5>Name: ${pokemon.name}</h5> 
+        <table class="table table-sm table-bordered w-auto">
             <tr>
-                <th>Name:</th>
                 <th>Level</th>
                 <th>Attack</th>
                 <th>Defense</th>
-                <th>Hp left</th>
-                <th>Hp max</th>
+                <th>Attack<br>Special</th>
+                <th>Defense<br>Special</th>
+                <th>Hp<br>left</th>
+                <th>Hp<br>max</th>
                 <th>Speed</th>
             </tr>
             <tr>
-                <td>${pokemon.name}</td>
                 <td>${pokemon.level}</td>
                 <td>${pokemon.stats.attack}</td>
                 <td>${pokemon.stats.defense}</td>
+                <td>${pokemon.stats.attackSp}</td>
+                <td>${pokemon.stats.defenseSp}</td>
                 <td>${pokemon.stats.hpLeft}</td>
                 <td>${pokemon.stats.hp}</td>
                 <td>${pokemon.stats.speed}</td>
@@ -417,7 +453,7 @@ const setAliveAllPokemons = () => {
 }
 
 
-const updateBattleLogs = string => gameLogs.innerHTML += string;
+const updateBattleLogs = string => gameLogs.innerHTML = ` (${logId++}) - ${string + gameLogs.innerHTML}`;
 
 const clearBattleLogs = () => gameLogs.innerText = '';
 
@@ -426,8 +462,8 @@ const switchShowHideUpContainer = () => divHideUp.classList.toggle('hide-up');
 const switchShowHideDownContainer = () => divHideDown.classList.toggle('hide-down');
 
 const prepareDOMEvents = () => {
-    btnAtkSimple.addEventListener('click', atackSimple);
-    // btnSp1.addEventListener('click', atackSpecial);
+    btnAtkSimple.addEventListener('click', () => atack('simple'));
+    btnAtkSpecial.addEventListener('click', () => atack('special'));
     btnGenPlayer.addEventListener('click', () => generatePlayer(0));
     btnGenOpponent.addEventListener('click', () => generateOpponent(0));
     btnHealPlayer.addEventListener('click', () => $pokemonPlayer.heal());
