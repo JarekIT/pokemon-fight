@@ -314,8 +314,14 @@ async function simulateAttack(attackType) {
 
         att = Math.floor(Math.random() * attack);
         def = Math.floor(Math.random() * defense /2);
-        damage = (att - def >= 0) ? att - def : 0; 
-        updateBattleLogs(`${attacker.name} use ${attackType} attack and deals ${damage} damages (${att} attacks vs ${def} defends)<br>`)
+        
+        damageBase = (attack - defense >= 0) ? 
+            (0.5 * (attack-defense)) : 0;
+        damageExtra = (att - def >= 0) ? 
+            (0.5 * (att - def)) : 0; 
+
+        damage = Math.floor(damageBase) + Math.floor(damageExtra);
+        updateBattleLogs(`${attacker.name} use ${attackType} attack and deals ${damage} damages (base: ${damageBase} + extra: ${damageExtra})<br>`)
     }
 
     const takeDamage = damage => {
