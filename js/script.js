@@ -283,7 +283,7 @@ async function generateOpponent(pokemonId){
 
 
 // main fight method 
-const attack = (attackType) =>{
+async function simulateAttack(attackType) {
 
     let attacker;
     let defender;
@@ -351,7 +351,7 @@ const attack = (attackType) =>{
     if (attackerAlive && defenderAlive){
         updateBattleLogs(`- - - - - New round - - - - -<br>`)
         checkWhoIsFaster();
-        shakeScreenAfterAttack();
+        await shakePokemonWhenAttacking(attacker);
         generateAttack(attackType);
         takeDamage(damage);
         updateDescription(defender)
@@ -360,6 +360,7 @@ const attack = (attackType) =>{
         // do fight - 2nd phase
         if (defenderAlive){
             counterAttack()
+            await shakePokemonWhenAttacking(attacker);
             generateAttack(attackType);
             takeDamage(damage);
             updateDescription(defender)
@@ -368,8 +369,6 @@ const attack = (attackType) =>{
         }
     } else {
         updateBattleLogs(`<u>Fight is over, choose new Pokemon</u><br><br>`)
-
-
     }
 
     // when Opponent is dead
@@ -378,19 +377,17 @@ const attack = (attackType) =>{
     }
 }
 
-const shakeScreenAfterAttack = () => {
-    const length = 400;
-    const amplitude = 2;
-    
-    const shake = () => {
-        for(let i = 0; i < length; i++){
-            window.moveBy(amplitude,0);
-            window.moveBy(0,amplitude);
-            window.moveBy(-amplitude,0);
-            window.moveBy(0,-amplitude);
-        }
-    }
-    shake();
+// shake Pokemon after clicking Attack button
+async function shakePokemonWhenAttacking(attacker) {   
+
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    let img = (attacker == $pokemonPlayer) ? imgPlayer : imgOpponent;
+    let direction = (attacker == $pokemonPlayer) ? 'shake-up' : 'shake-down';
+
+    img.classList.add(direction);
+    await sleep(750); 
+    img.classList.remove(direction);
 }
 
 const askForAnotherFight = () => {
@@ -462,8 +459,8 @@ const switchShowHideUpContainer = () => divHideUp.classList.toggle('hide-up');
 const switchShowHideDownContainer = () => divHideDown.classList.toggle('hide-down');
 
 const prepareDOMEvents = () => {
-    btnAtkSimple.addEventListener('click', () => attack('simple'));
-    btnAtkSpecial.addEventListener('click', () => attack('special'));
+    btnAtkSimple.addEventListener('click', () => simulateAttack('simple'));
+    btnAtkSpecial.addEventListener('click', () => simulateAttack('special'));
     btnGenPlayer.addEventListener('click', () => generatePlayer(0));
     btnGenOpponent.addEventListener('click', () => generateOpponent(0));
     btnHealPlayer.addEventListener('click', () => $pokemonPlayer.heal());
