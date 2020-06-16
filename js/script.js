@@ -226,7 +226,7 @@ const getOnePokemon = id => {
 async function generatePlayer(pokemonId){
         
     if (pokemonId == 0 || pokemonId == undefined || pokemonId == null) {
-        pokemonId = Math.floor(Math.random() * 152);
+        pokemonId = Math.floor(Math.random() * 151)+1;
     } 
     
     try {
