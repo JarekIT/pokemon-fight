@@ -233,7 +233,7 @@ async function generatePlayer(pokemonId){
         $pokemonPlayer = await getOnePokemon(pokemonId);
         console.log($pokemonPlayer);
 
-        imgPlayer.setAttribute('width','100px')
+        imgPlayer.setAttribute('width','150px')
         imgPlayer.setAttribute('src',img)
 
         updateDescription($pokemonPlayer)
@@ -266,7 +266,7 @@ async function generateOpponent(pokemonId){
         $pokemonOpponent = await getOnePokemon(pokemonId);
         console.log($pokemonOpponent);
 
-        imgOpponent.setAttribute('width','100px')
+        imgOpponent.setAttribute('width','150px')
         imgOpponent.setAttribute('src',img)
 
         updateDescription($pokemonOpponent)
