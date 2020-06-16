@@ -1,6 +1,6 @@
 
 let btnAtkSimple;     // simple attack button
-let btnAtkSpec;     // special atack button (under construction)
+let btnAtkSpec;     // special attack button (under construction)
 let btnGenPlayer;     // generate Pokemon for Player
 let btnGenOpponent;     // generate Pokemon for Opponent
 let btnHealPlayer;  // heal button
@@ -283,7 +283,7 @@ async function generateOpponent(pokemonId){
 
 
 // main fight method 
-const atack = (attackType) =>{
+const attack = (attackType) =>{
 
     let attacker;
     let defender;
@@ -462,8 +462,8 @@ const switchShowHideUpContainer = () => divHideUp.classList.toggle('hide-up');
 const switchShowHideDownContainer = () => divHideDown.classList.toggle('hide-down');
 
 const prepareDOMEvents = () => {
-    btnAtkSimple.addEventListener('click', () => atack('simple'));
-    btnAtkSpecial.addEventListener('click', () => atack('special'));
+    btnAtkSimple.addEventListener('click', () => attack('simple'));
+    btnAtkSpecial.addEventListener('click', () => attack('special'));
     btnGenPlayer.addEventListener('click', () => generatePlayer(0));
     btnGenOpponent.addEventListener('click', () => generateOpponent(0));
     btnHealPlayer.addEventListener('click', () => $pokemonPlayer.heal());
