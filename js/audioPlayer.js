@@ -1,12 +1,19 @@
-const playBackgroundSong = () => {
-    let embed = document.querySelector('audio');
+let embedPl = document.querySelector('.background-pl');
+let embedUs = document.querySelector('.background-us');
 
-    embed.volume = 0.05;
-    embed.setAttribute('type','audio/mpeg');
-    embed.setAttribute('src', '/audio/background.mp3');
-    embed.setAttribute('autoplay',true);
-    embed.setAttribute('controls',true);
-    embed.setAttribute('loop',true);
+const setBackgroundSongPL = () => {
+
+    embedPl.volume = 0.1;
+    embedPl.setAttribute('type','audio/mpeg');
+    embedPl.setAttribute('src', '/audio/background-pl.mp3');
 }
 
-playBackgroundSong()
+const setBackgroundSongUS = () => {
+
+    embedUs.volume = 0.05;
+    embedUs.setAttribute('type','audio/mpeg');
+    embedUs.setAttribute('src', '/audio/background.mp3');
+}
+
+setBackgroundSongPL();
+setBackgroundSongUS();

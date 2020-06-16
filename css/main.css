@@ -95,3 +95,7 @@ img:hover {
 td, th{
     font-size: 0.8rem;
 }
+
+audio { 
+    width: 150px; 
+}
